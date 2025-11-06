@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Mail, Lock, User } from 'lucide-react';
 
 const signupSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -62,53 +62,84 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Sign Up</CardTitle>
-        <CardDescription>Create an account to manage your tasks</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              {...register('email')}
-              disabled={isLoading}
-            />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
+    <div className="w-full max-w-md">
+      <div className="mb-8 text-center">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-4">
+          <User className="h-8 w-8 text-primary" />
+        </div>
+        <h1 className="text-2xl font-bold tracking-tight">Create Account</h1>
+        <p className="text-muted-foreground mt-2">
+          Sign up to start managing your tasks efficiently
+        </p>
+      </div>
+
+      <Card className="shadow-lg border-0">
+        <CardContent className="p-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email Address
+              </Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  className="pl-10 h-12"
+                  {...register('email')}
+                  disabled={isLoading}
+                />
+              </div>
+              {errors.email && (
+                <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium">
+                Password
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Create a password"
+                  className="pl-10 h-12"
+                  {...register('password')}
+                  disabled={isLoading}
+                />
+              </div>
+              {errors.password && (
+                <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
+              )}
+              <p className="text-xs text-muted-foreground mt-1">
+                Must be at least 6 characters long
+              </p>
+            </div>
+
+            {error && (
+              <Alert variant="destructive" className="border-0 bg-destructive/10 text-destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             )}
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              {...register('password')}
+            <Button
+              type="submit"
+              className="w-full h-12 text-base font-medium shadow-lg hover:shadow-xl transition-shadow"
               disabled={isLoading}
-            />
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
-            )}
-          </div>
+            >
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Create Account
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign Up
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+      <p className="text-center text-sm text-muted-foreground mt-6">
+        By creating an account, you agree to our terms of service and privacy policy.
+      </p>
+    </div>
   );
 }
