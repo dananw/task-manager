@@ -2,6 +2,10 @@
 
 A modern, feature-rich task management application built with Next.js 16, Clean Architecture principles, and Docker support.
 
+## Short Demo Video
+
+https://www.loom.com/share/cd413ab42fd84312b935796f59bf10af
+
 ## 🚀 Features
 
 - **User Authentication**: Secure signup/login with JWT tokens
@@ -19,16 +23,19 @@ A modern, feature-rich task management application built with Next.js 16, Clean 
 This application follows Clean Architecture principles:
 
 ### **Domain Layer** (`src/domain/`)
+
 - **Entities**: Core business models (User, Task)
 - **Use Cases**: Application business logic (CreateTaskUseCase, LoginUseCase)
 - **Repository Interfaces**: Contracts for data access
 
 ### **Data Layer** (`src/data/`)
+
 - **Repository Implementations**: Concrete implementations using Prisma
 - **Data Source**: Database connection and configuration
 - **Authentication Service**: JWT token management
 
 ### **Presentation Layer** (`src/app/`)
+
 - **API Routes**: Next.js API endpoints
 - **UI Components**: React components with shadcn/ui
 - **Pages**: Application pages and layouts
@@ -59,29 +66,34 @@ This application follows Clean Architecture principles:
 ### Local Development
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd task-manager
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
 4. **Set up the database**
+
    ```bash
    npx prisma generate
    npx prisma db push
    ```
 
 5. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -91,6 +103,7 @@ This application follows Clean Architecture principles:
 ### Docker Development
 
 1. **Start the development environment**
+
    ```bash
    npm run docker:dev
    ```
@@ -103,12 +116,14 @@ This application follows Clean Architecture principles:
 ### Docker Production
 
 1. **Set up production environment**
+
    ```bash
    cp .env.docker .env
    # Edit .env with secure JWT_SECRET
    ```
 
 2. **Start production environment**
+
    ```bash
    npm run docker:prod
    ```
@@ -144,12 +159,14 @@ npm run docker:clean     # Clean up containers and volumes
 ## 🎯 Application Features
 
 ### Authentication
+
 - **User Registration**: Sign up with email and password
 - **User Login**: Secure authentication with JWT tokens
 - **Session Management**: HTTP-only cookies for security
 - **Auto-logout**: Token-based session handling
 
 ### Task Management
+
 - **Create Tasks**: Add new tasks with title and optional description
 - **Edit Tasks**: Update task details through modal interface
 - **Delete Tasks**: Remove tasks with confirmation dialog
@@ -160,6 +177,7 @@ npm run docker:clean     # Clean up containers and volumes
 - **Task Filtering**: Filter tasks by status (All, To Do, In Progress, Done)
 
 ### User Interface
+
 - **Responsive Design**: Works on all screen sizes
 - **Dark/Light Theme**: Toggle between themes
 - **Modern Components**: shadcn/ui component library
@@ -208,6 +226,7 @@ npm run test:ui
 ```
 
 Tests focus on:
+
 - Authentication use cases
 - Task management use cases
 - Business logic validation
@@ -216,18 +235,21 @@ Tests focus on:
 ## 🐳 Docker Configuration
 
 ### Development Dockerfile
+
 - Node.js 20 Alpine base image
 - Development dependencies
 - Hot reload support
 - Automatic database initialization
 
 ### Production Dockerfile
+
 - Multi-stage build optimization
 - Minimal production image
 - Security best practices
 - Health checks
 
 ### Environment Variables
+
 - `DATABASE_URL`: SQLite database path
 - `JWT_SECRET`: Secret for JWT token signing
 - `NODE_ENV`: Environment mode (development/production)
@@ -235,12 +257,14 @@ Tests focus on:
 ## 🔧 Configuration
 
 ### Database Configuration
+
 - **Type**: SQLite
 - **ORM**: Prisma
 - **Migrations**: Automatic schema synchronization
 - **Location**: `./prisma/dev.db`
 
 ### Authentication Configuration
+
 - **Token Type**: JWT
 - **Storage**: HTTP-only cookies
 - **Expiration**: 7 days
@@ -261,18 +285,21 @@ JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
 ## 🚀 Deployment
 
 ### Production Build
+
 ```bash
 npm run build
 npm start
 ```
 
 ### Docker Deployment
+
 ```bash
 # Build and run production container
 npm run docker:prod
 ```
 
 ### Environment Requirements
+
 - Node.js 20+
 - SQLite support
 - Secure JWT_SECRET in production
