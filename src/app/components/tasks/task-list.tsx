@@ -1,14 +1,36 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { TaskForm } from './task-form';
-import { Task, TaskStatus } from '@/domain/entities';
-import { Calendar, Edit2, Trash2, Loader2 } from 'lucide-react';
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { TaskForm } from "./task-form";
+import { Task, TaskStatus } from "@/domain/entities";
+import { Calendar, Edit2, Trash2, Loader2, Circle } from "lucide-react";
 
 interface TaskListProps {
   tasks: Task[];
@@ -18,18 +40,29 @@ interface TaskListProps {
 }
 
 const statusColors = {
-  [TaskStatus.TODO]: 'bg-yellow-100 text-yellow-800',
-  [TaskStatus.IN_PROGRESS]: 'bg-blue-100 text-blue-800',
-  [TaskStatus.DONE]: 'bg-green-100 text-green-800'
+  [TaskStatus.TODO]: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  [TaskStatus.IN_PROGRESS]: "bg-blue-100 text-blue-800 border-blue-200",
+  [TaskStatus.DONE]: "bg-green-100 text-green-800 border-green-200",
+};
+
+const statusIconColors = {
+  [TaskStatus.TODO]: "text-yellow-600",
+  [TaskStatus.IN_PROGRESS]: "text-blue-600",
+  [TaskStatus.DONE]: "text-green-600",
 };
 
 const statusLabels = {
-  [TaskStatus.TODO]: 'To Do',
-  [TaskStatus.IN_PROGRESS]: 'In Progress',
-  [TaskStatus.DONE]: 'Done'
+  [TaskStatus.TODO]: "To Do",
+  [TaskStatus.IN_PROGRESS]: "In Progress",
+  [TaskStatus.DONE]: "Done",
 };
 
-export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskListProps) {
+export function TaskList({
+  tasks,
+  filter,
+  onFilterChange,
+  onTaskChange,
+}: TaskListProps) {
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
   const [updatingTaskId, setUpdatingTaskId] = useState<string | null>(null);
 
@@ -38,7 +71,7 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
 
     try {
       const response = await fetch(`/api/tasks/${taskId}`, {
-        method: 'DELETE'
+        method: "DELETE",
       });
 
       const result = await response.json();
@@ -46,10 +79,10 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
       if (result.success) {
         onTaskChange();
       } else {
-        console.error('Delete error:', result.error);
+        console.error("Delete error:", result.error);
       }
     } catch (error) {
-      console.error('Network error:', error);
+      console.error("Network error:", error);
     } finally {
       setDeletingTaskId(null);
     }
@@ -60,11 +93,11 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
 
     try {
       const response = await fetch(`/api/tasks/${taskId}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ status: newStatus }),
       });
 
       const result = await response.json();
@@ -72,20 +105,20 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
       if (result.success) {
         onTaskChange();
       } else {
-        console.error('Status update error:', result.error);
+        console.error("Status update error:", result.error);
       }
     } catch (error) {
-      console.error('Network error:', error);
+      console.error("Network error:", error);
     } finally {
       setUpdatingTaskId(null);
     }
   };
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     }).format(new Date(date));
   };
 
@@ -100,9 +133,15 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All">All Tasks</SelectItem>
-              <SelectItem value={TaskStatus.TODO}>To Do</SelectItem>
-              <SelectItem value={TaskStatus.IN_PROGRESS}>In Progress</SelectItem>
-              <SelectItem value={TaskStatus.DONE}>Done</SelectItem>
+              <SelectItem value={TaskStatus.TODO}>
+                To Do
+              </SelectItem>
+              <SelectItem value={TaskStatus.IN_PROGRESS}>
+                In Progress
+              </SelectItem>
+              <SelectItem value={TaskStatus.DONE}>
+                Done
+              </SelectItem>
             </SelectContent>
           </Select>
 
@@ -119,10 +158,9 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <p className="text-muted-foreground text-center">
-              {filter === 'All'
-                ? 'No tasks yet. Create your first task to get started!'
-                : `No tasks with status "${filter}".`
-              }
+              {filter === "All"
+                ? "No tasks yet. Create your first task to get started!"
+                : `No tasks with status "${filter}".`}
             </p>
             <TaskForm onSuccess={onTaskChange}>
               <Button variant="outline" className="mt-4">
@@ -144,21 +182,38 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
                       {updatingTaskId === task.id ? (
                         <div className="flex items-center space-x-1">
                           <Loader2 className="h-3 w-3 animate-spin" />
-                          <span className="text-sm text-muted-foreground">Updating...</span>
+                          <span className="text-sm text-muted-foreground">
+                            Updating...
+                          </span>
                         </div>
                       ) : (
                         <Select
                           value={task.status}
-                          onValueChange={(value) => handleStatusChange(task.id, value as TaskStatus)}
+                          onValueChange={(value) =>
+                            handleStatusChange(task.id, value as TaskStatus)
+                          }
                           disabled={updatingTaskId === task.id}
                         >
-                          <SelectTrigger className="w-[140px]">
-                            <SelectValue />
+                          <SelectTrigger className="w-[160px]">
+                            <div className="flex items-center space-x-2">
+                              <Circle
+                                className={`h-3 w-3 fill-current ${
+                                  statusIconColors[task.status]
+                                }`}
+                              />
+                              <SelectValue />
+                            </div>
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value={TaskStatus.TODO}>To Do</SelectItem>
-                            <SelectItem value={TaskStatus.IN_PROGRESS}>In Progress</SelectItem>
-                            <SelectItem value={TaskStatus.DONE}>Done</SelectItem>
+                            <SelectItem value={TaskStatus.TODO}>
+                              To Do
+                            </SelectItem>
+                            <SelectItem value={TaskStatus.IN_PROGRESS}>
+                              In Progress
+                            </SelectItem>
+                            <SelectItem value={TaskStatus.DONE}>
+                              Done
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       )}
@@ -185,7 +240,8 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
                         <AlertDialogHeader>
                           <AlertDialogTitle>Delete Task</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Are you sure you want to delete "{task.title}"? This action cannot be undone.
+                            Are you sure you want to delete "{task.title}"? This
+                            action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -194,7 +250,9 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
                             onClick={() => handleDeleteTask(task.id)}
                             disabled={deletingTaskId === task.id}
                           >
-                            {deletingTaskId === task.id ? 'Deleting...' : 'Delete'}
+                            {deletingTaskId === task.id
+                              ? "Deleting..."
+                              : "Delete"}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
