@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { TaskForm } from './task-form';
 import { Task, TaskStatus } from '@/domain/entities';
-import { Calendar, Edit2, Trash2 } from 'lucide-react';
+import { Calendar, Edit2, Trash2, Loader2 } from 'lucide-react';
 
 interface TaskListProps {
   tasks: Task[];
@@ -31,6 +31,7 @@ const statusLabels = {
 
 export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskListProps) {
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
+  const [updatingTaskId, setUpdatingTaskId] = useState<string | null>(null);
 
   const handleDeleteTask = async (taskId: string) => {
     setDeletingTaskId(taskId);
@@ -51,6 +52,32 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
       console.error('Network error:', error);
     } finally {
       setDeletingTaskId(null);
+    }
+  };
+
+  const handleStatusChange = async (taskId: string, newStatus: TaskStatus) => {
+    setUpdatingTaskId(taskId);
+
+    try {
+      const response = await fetch(`/api/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        onTaskChange();
+      } else {
+        console.error('Status update error:', result.error);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+    } finally {
+      setUpdatingTaskId(null);
     }
   };
 
@@ -114,9 +141,27 @@ export function TaskList({ tasks, filter, onFilterChange, onTaskChange }: TaskLi
                   <div className="space-y-1">
                     <CardTitle className="text-lg">{task.title}</CardTitle>
                     <div className="flex items-center space-x-2">
-                      <Badge className={statusColors[task.status]}>
-                        {statusLabels[task.status]}
-                      </Badge>
+                      {updatingTaskId === task.id ? (
+                        <div className="flex items-center space-x-1">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <span className="text-sm text-muted-foreground">Updating...</span>
+                        </div>
+                      ) : (
+                        <Select
+                          value={task.status}
+                          onValueChange={(value) => handleStatusChange(task.id, value as TaskStatus)}
+                          disabled={updatingTaskId === task.id}
+                        >
+                          <SelectTrigger className="w-[140px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={TaskStatus.TODO}>To Do</SelectItem>
+                            <SelectItem value={TaskStatus.IN_PROGRESS}>In Progress</SelectItem>
+                            <SelectItem value={TaskStatus.DONE}>Done</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
                       <div className="flex items-center text-sm text-muted-foreground">
                         <Calendar className="mr-1 h-3 w-3" />
                         {formatDate(task.createdAt)}
